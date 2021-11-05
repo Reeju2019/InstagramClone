@@ -9,39 +9,30 @@ import {
 } from "react-native";
 import FormikPostUploader from "./FormikPostUploader";
 
-const AddNewPost = () => (
-  <SafeAreaView style={styles.container}>
-    <Header />
-    <FormikPostUploader />
-    {/* <View style={styles.container}>
-    </View> */}
-  </SafeAreaView>
-);
-const Header = () => (
-  <View style={styles.headerContainer}>
-    <TouchableOpacity>
-      <Image
-        source={{
-          uri: "https://img.icons8.com/ios-glyphs/90/ffffff/back.png",
-        }}
-        style={{ width: 30, height: 30 }}
-      />
-    </TouchableOpacity>
-    <Text style={styles.headerText}>New Post</Text>
-    <TouchableOpacity>
-      <Text
-        style={{
-          color: "white",
-          fontSize: 18,
-          fontWeight: "700",
-          marginTop: 5,
-        }}
-      >
-        {/* Post */}
-      </Text>
-    </TouchableOpacity>
-  </View>
-);
+const AddNewPost = ({ navigation }) => {
+  return (
+    <SafeAreaView style={styles.container}>
+      <Header navigation={navigation} />
+      <FormikPostUploader navigation={navigation} />
+    </SafeAreaView>
+  );
+};
+const Header = ({ navigation }) => {
+  return (
+    <View style={styles.headerContainer}>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Image
+          source={{
+            uri: "https://img.icons8.com/ios-glyphs/90/ffffff/back.png",
+          }}
+          style={{ width: 30, height: 30 }}
+        />
+      </TouchableOpacity>
+      <Text style={styles.headerText}>Add a New Post</Text>
+      <Text></Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

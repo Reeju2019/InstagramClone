@@ -1,38 +1,43 @@
 import React from "react";
+import { useNavigation } from "@react-navigation/core";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Divider } from "react-native-elements";
+import {
+  Entypo,
+  Fontisto,
+  Feather,
+  AntDesign,
+  Ionicons,
+} from "react-native-vector-icons";
 
-const PostFooterIcons = [
+const postFooterIcons = [
   {
     name: "Like",
-    imageUrl:
-      "https://img.icons8.com/fluency-systems-regular/60/ffffff/like--v1.png",
-    likedImageUrl: "https://img.icons8.com/ios-glyphs/30/000000/like--v1.png",
+    url: "https://img.icons8.com/material-outlined/24/ffffff/filled-like.png",
+    likedUrl: "https://img.icons8.com/material/24/ffffff/filled-like--v1.png",
   },
   {
-    name: "Comment",
-    imageUrl: "https://img.icons8.com/ios/50/ffffff/topic.png",
+    name: "comment",
+    url: "https://img.icons8.com/material-outlined/24/ffffff/filled-topic.png",
   },
   {
-    name: "Share",
-    imageUrl:
-      "https://cdn131.picsart.com/328472298029211.png?type=webp&amp;to=min&amp;r=640",
+    name: "share",
+    url: "https://img.icons8.com/material-outlined/24/ffffff/filled-sent.png",
   },
   {
-    name: "Save",
-    imageUrl:
-      "https://cdn141.picsart.com/328472001021211.png?type=webp&to=min&r=640",
+    name: "bookmark",
+    url: "https://img.icons8.com/material-outlined/24/ffffff/bookmark-ribbon.png",
   },
 ];
 
 const Post = ({ post }) => {
   return (
     <View style={{ marginBottom: 30 }}>
-      <Divider width={1} orientation="vertical" />
+      <Divider style={{ backgroundColor: "white" }} />
       <PostHeader post={post} />
       <PostImage post={post} />
       <View style={{ marginHorizontal: 15, marginTop: 10 }}>
-        <PostFooter />
+        <PostFooter post={post} />
         <Likes post={post} />
         <Caption post={post} />
         <CommentsSection post={post} />
@@ -41,36 +46,75 @@ const Post = ({ post }) => {
     </View>
   );
 };
+// const PostHeader = ({ post, postOwnerData, formModal, setModalVisible }) => {
 
-const PostHeader = ({ post }) => (
-  <View
-    style={{
-      flexDirection: "row",
-      justifyContent: "space-between",
-      margin: 5,
-      alignItems: "center",
-    }}
-  >
-    <View style={{ flexDirection: "row", alignItems: "center" }}>
-      <Image source={{ uri: post.profile_picture }} style={styles.story} />
-      <Text style={{ color: "white", marginLeft: 5, fontWeight: 700 }}>
-        {post.user}
-      </Text>
-    </View>
-    <Text style={{ color: "white", fontWeight: "900" }}>...</Text>
-  </View>
-);
+//     const navigation = useNavigation()
+//     return (
+//         <View style={styles.postHeaderContainer}>
+//             <View style={styles.goBackButtonContainer}>
 
-const PostImage = ({ post }) => {
+//                 {formModal && <TouchableOpacity onPress={() => setModalVisible(false)}>
+//                     <Ionicons name="chevron-back" size={30} color="white" style={styles.goBackButton} />
+//                 </TouchableOpacity>}
+//                 <TouchableOpacity onPress={() => navigation.navigate("ProfileScreen", {
+//                     otherUserUid:
+//                     {
+//                         uid: post.owner_uid,
+//                     },
+//                     userEmail: post.owner_email
+//                 }
+//                 )} style={styles.PostHeaderUserContainer}>
+//                     <Image style={styles.profilePicture} source={{ uri: postOwnerData.profilePicture }} />
+//                     <Text style={styles.userName}>{postOwnerData.username}</Text>
+//                 </TouchableOpacity>
+//             </View>
+//             <Entypo name="dots-three-vertical" color="gray" size={20} />
+//         </View>
+//     )
+// }
+
+const PostHeader = ({ post, postOwnerData, formModal, setModalVisible }) => {
+  const navigation = useNavigation();
   return (
-    <View style={{ width: "100%", height: 450 }}>
-      <Image
-        source={{ uri: post.imageUrl }}
-        style={{ height: "100%", resizeMode: "cover" }}
-      />
+    <View style={styles.postHeaderContainer}>
+      <View style={styles.goBackButtonContainer}>
+        {formModal && (
+          <TouchableOpacity onPress={() => setModalVisible(false)}>
+            <Ionicons
+              name="chevron-back"
+              size={30}
+              color="white"
+              style={styles.goBackButton}
+            />
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("ProfileScreen", {
+              otherUserUid: {
+                uid: post.owner_uid,
+              },
+              userEmail: post.owner_email,
+            })
+          }
+          style={styles.PostHeaderUserContainer}
+        >
+          <Image
+            style={styles.profilePicture}
+            source={{ uri: post.profile_picture }}
+          />
+          <Text style={styles.userName}>{post.user}</Text>
+        </TouchableOpacity>
+      </View>
+      <Entypo name="dots-three-vertical" color="gray" size={20} />
     </View>
   );
 };
+const PostImage = ({ post }) => (
+  <View style={{ width: "100%", height: 450 }}>
+    <Image source={{ uri: post.imageUrl }} style={styles.postImage} />
+  </View>
+);
 
 // const PostFooter = ({ icon }) => {
 //   return (
@@ -89,21 +133,28 @@ const PostImage = ({ post }) => {
 //   </View>
 // );
 
-const PostFooter = () => (
-  <View style={{ flexDirection: "row" }}>
-    <View style={styles.leftFooterIconContainer}>
-      <Icon imgStyle={styles.footerIcon} imgUrl={PostFooterIcons[0].imageUrl} />
-      <Icon imgStyle={styles.footerIcon} imgUrl={PostFooterIcons[1].imageUrl} />
-      <Icon
-        imgStyle={(styles.footerIcon, styles.shareIcon)}
-        imgUrl={PostFooterIcons[2].imageUrl}
-      />
+const PostFooter = ({ post }) => (
+  <View
+    style={{
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+    }}
+  >
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        width: "32%",
+        justifyContent: "space-between",
+      }}
+    >
+      <Icon imgStyle={styles.footerIcon} imgUrl={postFooterIcons[0].url} />
+      <Icon imgStyle={styles.footerIcon} imgUrl={postFooterIcons[1].url} />
+      <Icon imgStyle={styles.footerIcon} imgUrl={postFooterIcons[2].url} />
     </View>
-    <View style={{ flex: 1, alignItems: "flex-end" }}>
-      <Icon
-        imgStyle={(styles.footerIcon, styles.saveIcon)}
-        imgUrl={PostFooterIcons[3].imageUrl}
-      />
+    <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <Icon imgStyle={styles.footerIcon} imgUrl={postFooterIcons[3].url} />
     </View>
   </View>
 );
@@ -116,39 +167,41 @@ const Icon = ({ imgStyle, imgUrl }) => (
 
 const Likes = ({ post }) => (
   <View style={{ flexDirection: "row", marginTop: 4 }}>
-    <Text style={{ color: "white", fontWeight: 600 }}>
-      {post.likes.toLocaleString("en")} likes
-    </Text>
+    {/* <Text style={{ color: "white", fontWeight: 600 }}>
+      {/* {post.likes.toLocaleString("en")} likes
+    </Text> */}
   </View>
 );
 
 const Caption = ({ post }) => (
-  <View style={{ marginTop: 5 }}>
+  <View style={{ marginTop: 10 }}>
     <Text style={{ color: "white" }}>
-      <Text style={{ fontWeight: "600", marginRight: 5 }}>{post.user}</Text>
-      <Text> {post.caption}</Text>
+      <Text style={{ fontWeight: "600" }}>{post.user}</Text>
+      <Text style={{ fontWeight: "100" }}> {post.caption}</Text>
     </Text>
   </View>
 );
-
-const CommentsSection = ({ post }) => (
-  <View style={{ marginTop: 5 }}>
-    {post.comments.length && (
-      <Text style={{ color: "gray" }}>
-        View{post.comments.length > 1 ? " all" : ""} {post.comments.length}{" "}
-        {post.comments.length > 1 ? "comments" : "comment"}
-      </Text>
-    )}
-  </View>
-);
+const CommentsSection = ({ post }) => {
+  return (
+    <View style={{ marginTop: 5 }}>
+      {!!post.comments.length && (
+        <Text style={{ color: "gray" }}>
+          {post.comments.length > 1
+            ? `View all ${post?.comments?.length} comments`
+            : `View a comment`}
+        </Text>
+      )}
+    </View>
+  );
+};
 
 const Comments = ({ post }) => (
   <>
     {post.comments.map((comment, index) => (
-      <View key={index} style={{ flexDirection: "row", marginTop: 5 }}>
+      <View key={index}>
         <Text style={{ color: "white" }}>
-          <Text style={{ fontWeight: 600 }}>{comment.user}</Text>{" "}
-          {comment.comment}
+          <Text style={{ fontWeight: "600" }}>{comment.user}</Text>
+          <Text> {comment.comment}</Text>
         </Text>
       </View>
     ))}
@@ -156,33 +209,57 @@ const Comments = ({ post }) => (
 );
 
 const styles = StyleSheet.create({
-  story: {
-    width: 35,
+  postHeaderContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    margin: 8,
+    alignItems: "center",
+  },
+  PostHeaderUserContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  profilePicture: {
     height: 35,
-    borderRadius: 50,
-    marginLeft: 10,
-    borderWidth: 1.6,
+    width: 35,
+    borderRadius: 25,
     borderColor: "#ff8501",
+    borderWidth: 1.7,
+  },
+  userName: {
+    color: "white",
+    marginLeft: 5,
+    fontWeight: "700",
+  },
+  postImage: {
+    height: "100%",
+  },
+  iconsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  leftFooterIconsContainer: {
+    flexDirection: "row",
+    width: 120,
+    justifyContent: "space-between",
+  },
+  likestext: {
+    color: "white",
+    fontWeight: "700",
+    marginTop: 6,
+  },
+  caption: {
+    color: "white",
+  },
+  goBackButtonContainer: {
+    flexDirection: "row",
+  },
+  goBackButton: {
+    marginRight: 20,
   },
   footerIcon: {
-    width: 33,
-    height: 33,
-  },
-  shareIcon: {
-    width: 28,
-    height: 28,
-    transform: [{ rotate: "-20deg" }],
-    marginTop: 5,
-  },
-  saveIcon: {
-    marginTop: 5,
-    width: 25,
-    height: 25,
-  },
-  leftFooterIconContainer: {
-    flexDirection: "row",
-    width: "32%",
-    justifyContent: "space-between",
+    height: 30,
+    width: 30,
   },
 });
 

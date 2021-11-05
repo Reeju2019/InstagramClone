@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
-import { Divider } from "react-native-elements/dist/divider/Divider";
 
 export const bottomTabIcons = [
   {
@@ -28,38 +27,31 @@ export const bottomTabIcons = [
   },
   {
     name: "Profile",
-    active:
-      "https://yt3.ggpht.com/ytc/AKedOLRY9Un_v7Xr9dG1F5NEkqGsGSqwqRz0O3w3r1mI=s900-c-k-c0x00ffffff-no-rj",
-    inactive:
-      "https://yt3.ggpht.com/ytc/AKedOLRY9Un_v7Xr9dG1F5NEkqGsGSqwqRz0O3w3r1mI=s900-c-k-c0x00ffffff-no-rj",
+    active: "https://avatars.githubusercontent.com/u/59705002?v=4",
+    inactive: "https://avatars.githubusercontent.com/u/59705002?v=4",
   },
 ];
 
-const BottomTabs = ({ icons }) => {
+const BottomTabs = ({ icons, navigation }) => {
   const [activeTab, setActiveTab] = useState("Home");
-
   const Icon = ({ icon }) => (
-    <TouchableOpacity onPress={() => setActiveTab(icon.name)}>
+    <TouchableOpacity
+      onPress={() => {
+        setActiveTab(icon.name);
+        navigation.push("ProfileScreen");
+      }}
+    >
       <Image
         source={{ uri: activeTab === icon.name ? icon.active : icon.inactive }}
-        style={[
-          styles.icon,
-          icon.name === "Profile" ? styles.profilePic() : null,
-          activeTab === "Profile" && icon.name === activeTab
-            ? styles.profilePic(activeTab)
-            : null,
-        ]}
+        style={styles.icon}
       />
     </TouchableOpacity>
   );
   return (
-    <View style={styles.wrapper}>
-      <Divider width={1} orientation="vartical" />
-      <View style={styles.container}>
-        {icons.map((icon, index) => (
-          <Icon key={index} icon={icon} />
-        ))}
-      </View>
+    <View style={styles.container}>
+      {icons.map((icon, index) => (
+        <Icon key={index} icon={icon}></Icon>
+      ))}
     </View>
   );
 };
@@ -75,12 +67,16 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     justifyContent: "space-around",
-    height: 50,
-    paddingTop: 10,
+    padding: 12,
+    borderTopWidth: 1,
+    borderTopColor: "#a9a9a9",
   },
   icon: {
     width: 30,
     height: 30,
+    padding: 5,
+    backgroundColor: "#000",
+    borderRadius: 15,
   },
   profilePic: (activeTab = "") => ({
     borderRadius: 50,
